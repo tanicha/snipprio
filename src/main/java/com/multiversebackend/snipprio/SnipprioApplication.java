@@ -1,7 +1,9 @@
 package com.multiversebackend.snipprio;
 
 import com.multiversebackend.snipprio.model.Snippet;
+import com.multiversebackend.snipprio.model.User;
 import com.multiversebackend.snipprio.repository.SnippetRepository;
+import com.multiversebackend.snipprio.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -16,6 +18,8 @@ public class SnipprioApplication implements CommandLineRunner {
 
 	@Autowired
 	private SnippetRepository snippetRepository;
+	@Autowired
+	private UserRepository userRespository;
 
 	@Override //when the app first runs - this will be in our db
 	public void run(String... args) throws Exception {
@@ -75,6 +79,13 @@ public class SnipprioApplication implements CommandLineRunner {
 		snippet8.setLanguage("java");
 		snippet8.setCode("public class Rectangle {\n    private int width;\n    private int height;\n\n    public Rectangle(int width, int height) {\n        this.width = width;\n        this.height = height;\n    }\n\n    public int getArea() {\n        return width * height;\n    }\n}");
 		snippetRepository.save(snippet8);
+
+		//1 user - this will fail the authentication route test since the encryption pwd is already set up
+		User user = new User();
+		user.setId(1);
+		user.setEmail("tani@example.com");
+		user.setPassword("12345");
+		userRespository.save(user);
 	}
 
 }

@@ -13,10 +13,11 @@ import lombok.Setter;
 @Entity
 @Table(name = "users")
 public class User {
-    @Id
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Id
     @Column(name = "email")
     private String email;
 
