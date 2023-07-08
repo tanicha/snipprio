@@ -1,11 +1,13 @@
 package com.multiversebackend.snipprio.controller;
 
-import com.multiversebackend.snipprio.exception.ResourceNotFoundException;
 import com.multiversebackend.snipprio.model.Snippet;
 import com.multiversebackend.snipprio.repository.SnippetRepository;
+import com.multiversebackend.snipprio.service.SnippetService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,8 @@ public class SnippetController {
 
     @Autowired
     private SnippetRepository snippetRepository;
+    @Autowired
+    private SnippetService snippetService;
 
 //    //when first loaded into the local host
 //    @GetMapping
@@ -31,15 +35,30 @@ public class SnippetController {
 
     //create a snippet
     @PostMapping
-    public Snippet createSnippet(@RequestBody Snippet snippet) {
-        return snippetRepository.save(snippet);
+    public ResponseEntity<Snippet> createSnippet(@RequestBody Snippet snippet) {
+        try {
+            Snippet encryptedSnippet = snippetService.createSnippet(snippet);
+            return new ResponseEntity<>(encryptedSnippet, HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     //get a snippet by id
     @GetMapping("{id}")
     public ResponseEntity<Snippet> getSnippetById(@PathVariable long id) {
-        Snippet snippet = snippetRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Snippet with id: " + id + "does not exist."));
-        return ResponseEntity.ok(snippet);
+        try {
+            Snippet decryptedSnippet = snippetService.getSnippetById(id);
+            if (decryptedSnippet != null) {
+                return ResponseEntity.ok(decryptedSnippet);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     //get snippet(s) with requested param content
@@ -49,7 +68,8 @@ public class SnippetController {
         List<Snippet> matchingSnippets = new ArrayList<>();
 
         for (Snippet snippet: snippetRepository.findAll()) {
-            if (snippet.getLanguage().equals(language)) {
+            String snippetLanguage = snippet.getLanguage();
+            if (snippetLanguage != null && snippetLanguage.equals(language)) {
                 matchingSnippets.add(snippet);
             }
         }

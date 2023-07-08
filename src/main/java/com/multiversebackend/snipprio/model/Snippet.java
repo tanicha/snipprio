@@ -6,13 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "snippets")
-public class Snippet {
+public class Snippet implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //automatically generate id for the snippets
     private long id;
@@ -24,3 +26,4 @@ public class Snippet {
     private String code;
 
 }
+

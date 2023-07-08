@@ -17,7 +17,6 @@ public class UserService {
     public String authenticateUser(User user) throws ResourceNotFoundException {
         //create another object using the given encryption dependency
         BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
-
         //finds the user passed in by email
         Optional<User> currentUser = userRepository.findById(user.getEmail());
         //if the user is present, we assign their info to dbUser
