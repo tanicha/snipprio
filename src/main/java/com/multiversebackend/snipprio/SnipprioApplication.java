@@ -19,7 +19,7 @@ public class SnipprioApplication implements CommandLineRunner {
 	@Autowired
 	private SnippetRepository snippetRepository;
 	@Autowired
-	private UserRepository userRespository;
+	private UserRepository userRepository;
 
 	@Override //when the app first runs - this will be in our db
 	public void run(String... args) throws Exception {
@@ -85,7 +85,7 @@ public class SnipprioApplication implements CommandLineRunner {
 		user.setId(1);
 		user.setEmail("tani@example.com");
 		user.setPassword("12345");
-		userRespository.save(user);
+		userRepository.save(user);
 	}
 
 }

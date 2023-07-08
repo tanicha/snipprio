@@ -44,5 +44,4 @@ public class UserService {
         User savedUser = userRepository.save(user);
         return savedUser.getEmail() + " has been added to the database!";
     }
-
 }

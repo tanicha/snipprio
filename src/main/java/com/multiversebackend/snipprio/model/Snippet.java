@@ -22,8 +22,7 @@ public class Snippet implements Serializable {
     @Column(name = "language")
     private String language;
 
-    @Column(name = "code")
+    @Column(name = "code", length = 700)
     private String code;
-
 }
 

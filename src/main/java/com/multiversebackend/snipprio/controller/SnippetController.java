@@ -4,7 +4,6 @@ import com.multiversebackend.snipprio.model.Snippet;
 import com.multiversebackend.snipprio.repository.SnippetRepository;
 import com.multiversebackend.snipprio.service.SnippetService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,31 +32,26 @@ public class SnippetController {
         return snippetRepository.findAll();
     }
 
-    //create a snippet
-    @PostMapping
-    public ResponseEntity<Snippet> createSnippet(@RequestBody Snippet snippet) {
-        try {
-            Snippet encryptedSnippet = snippetService.createSnippet(snippet);
-            return new ResponseEntity<>(encryptedSnippet, HttpStatus.CREATED);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    //creates the keys for my encrypted snippets
+    @GetMapping("/createKeys")
+    public void createPrivatePublicKeys() {
+        snippetService.createKeys();
     }
 
-    //get a snippet by id
+    //create and encrypt the snippet
+    @PostMapping
+    public Snippet encryptSnippet(@RequestBody Snippet snippet) {
+        return snippetService.encryptSnippet(snippet);
+    }
+
+    //get snippet by id
     @GetMapping("{id}")
     public ResponseEntity<Snippet> getSnippetById(@PathVariable long id) {
-        try {
-            Snippet decryptedSnippet = snippetService.getSnippetById(id);
-            if (decryptedSnippet != null) {
-                return ResponseEntity.ok(decryptedSnippet);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        Snippet decryptedSnippet = snippetService.decryptSnippet(id);
+        if (decryptedSnippet != null) {
+            return ResponseEntity.ok(decryptedSnippet);
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 
