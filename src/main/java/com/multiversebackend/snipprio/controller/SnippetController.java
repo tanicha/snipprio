@@ -29,6 +29,15 @@ public class SnippetController {
     //gets all snippets
     @GetMapping
     public List<Snippet> getAllSnippets() {
+        List<Snippet> snippets = snippetRepository.findAll();
+        List<Snippet> decryptedSnippets = new ArrayList<>();
+
+        for (Snippet snippet : snippets) {
+            Snippet decryptedCode = snippetService.decryptSnippet(snippet.getId());
+            if (decryptedCode != null) {
+                decryptedSnippets.add(snippet);
+            }
+        }
         return snippetRepository.findAll();
     }
 

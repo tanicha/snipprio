@@ -25,4 +25,3 @@ public class Snippet implements Serializable {
     @Column(name = "code", length = 700)
     private String code;
 }
-
